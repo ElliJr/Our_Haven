@@ -16,7 +16,8 @@
         "foregroundImage": "./assets/images/ourhaven.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.elli.kun.ourhaven"
     },
     "web": {
       "bundler": "metro",
@@ -37,6 +38,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "828b10c2-a797-4bdc-be07-19ea18e27339"
+      }
     }
   }
 }

@@ -1,19 +1,29 @@
 import { Image } from 'expo-image';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import React from 'react';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
 export default function HomeScreen() {
+  const handleLoginPress = () => {
+    // Aqui você coloca a navegação para tela de login
+    console.log("Ir para login");
+  };
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#FFD1DC', dark: '#3A1F2B' }}
       headerImage={
-        <Image
-          source={require('@/assets/images/ourhaven.png')} // logo personalizada
-          style={styles.logo}
-        />
+        <View style={styles.headerContent}>
+          <Image
+            source={require('@/assets/images/ourhaven.png')}
+            style={styles.logo}
+          />
+          <TouchableOpacity style={styles.loginButton} onPress={handleLoginPress}>
+            <ThemedText style={styles.loginText}>Login</ThemedText>
+          </TouchableOpacity>
+        </View>
       }
     >
       <ThemedView style={styles.titleContainer}>
@@ -29,43 +39,50 @@ export default function HomeScreen() {
         </ThemedText>
       </View>
 
-      <View style={styles.card}>
-        <ThemedText type="subtitle" style={styles.cardTitle}>
-          💌 Inicie uma conversa
-        </ThemedText>
-        <ThemedText style={styles.cardText}>
-          Troque mensagens de forma privada e exclusiva com seu par.
-        </ThemedText>
-      </View>
-
-      <View style={styles.card}>
-        <ThemedText type="subtitle" style={styles.cardTitle}>
-          📷 Compartilhe memórias
-        </ThemedText>
-        <ThemedText style={styles.cardText}>
-          Envie fotos, áudios e vídeos para criar um álbum especial.
-        </ThemedText>
-      </View>
-
-      <View style={styles.card}>
-        <ThemedText type="subtitle" style={styles.cardTitle}>
-          🌹 Surpreenda
-        </ThemedText>
-        <ThemedText style={styles.cardText}>
-          Mande mensagens carinhosas e descubra novas formas de demonstrar afeto.
-        </ThemedText>
-      </View>
+      {[
+        { icon: "💌", title: "Inicie uma conversa", text: "Troque mensagens de forma privada e exclusiva com seu par." },
+        { icon: "📷", title: "Compartilhe memórias", text: "Envie fotos, áudios e vídeos para criar um álbum especial." },
+        { icon: "🌹", title: "Surpreenda", text: "Mande mensagens carinhosas e descubra novas formas de demonstrar afeto." }
+      ].map((card, index) => (
+        <View key={index} style={styles.card}>
+          <ThemedText type="subtitle" style={styles.cardTitle}>
+            {card.icon} {card.title}
+          </ThemedText>
+          <ThemedText style={styles.cardText}>
+            {card.text}
+          </ThemedText>
+        </View>
+      ))}
     </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  headerContent: {
+    alignItems: 'center',
+    marginTop: 50,
+    position: 'relative',
+  },
   logo: {
     height: 150,
     width: 150,
-    alignSelf: 'center',
-    marginTop: 20,
+    borderRadius: 75,
     resizeMode: 'contain',
+  },
+  loginButton: {
+    position: 'absolute',
+    right: 20,
+    top: 20,
+    backgroundColor: '#C2185B',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    elevation: 3,
+  },
+  loginText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 14,
   },
   titleContainer: {
     alignItems: 'center',
@@ -86,15 +103,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#6A1B4D',
     textAlign: 'center',
+    lineHeight: 22,
   },
   card: {
     backgroundColor: '#FFE4EC',
     padding: 16,
     marginHorizontal: 20,
-    borderRadius: 12,
+    borderRadius: 16,
     marginBottom: 15,
     shadowColor: '#000',
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.08,
     shadowRadius: 4,
     elevation: 2,
   },
@@ -102,9 +120,11 @@ const styles = StyleSheet.create({
     color: '#AD1457',
     fontWeight: 'bold',
     marginBottom: 6,
+    fontSize: 16,
   },
   cardText: {
     color: '#4A0D29',
     fontSize: 14,
+    lineHeight: 20,
   },
 });
