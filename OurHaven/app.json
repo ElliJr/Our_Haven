@@ -2,9 +2,9 @@
   "expo": {
     "name": "ourhaven",
     "slug": "ourhaven",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/ourhaven.png",
     "scheme": "ourhaven",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -22,7 +22,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/ourhaven.png"
     },
     "plugins": [
       "expo-router",

@@ -4,10 +4,16 @@ import React from 'react';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from './types';
+
 
 export default function HomeScreen() {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  
   const handleLoginPress = () => {
-    // Aqui você coloca a navegação para tela de login
+    navigation.navigate("LoginScreen");
     console.log("Ir para login");
   };
 

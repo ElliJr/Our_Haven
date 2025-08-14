@@ -16,7 +16,7 @@ export default function TabTwoScreen() {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
     const handleLoginPress = () => {
-        navigation.replace("LoginScreen");
+        navigation.navigate("LoginScreen");
       console.log("Ir para login");
     };
   
@@ -68,7 +68,7 @@ export default function TabTwoScreen() {
           📅 Agenda
         </ThemedText>
         <ThemedText style={styles.cardText}>
-          Marque datas importantes e nunca mais esqueça momentos especiais.
+          Marque moment
         </ThemedText>
       </View>
     </ParallaxScrollView>
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   button: {
-    backgroundColor: '#C2185B',
+    backgroundColor: '#ffffffff',
     paddingVertical: 8,
     borderRadius: 8,
     alignItems: 'center',

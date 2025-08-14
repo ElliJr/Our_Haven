@@ -10,6 +10,7 @@ import {
   User
 } from "firebase/auth";
 import * as WebBrowser from "expo-web-browser";
+import * as AuthSession from "expo-auth-session";
 import * as Google from "expo-auth-session/providers/google";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
@@ -23,17 +24,24 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Login">;
 
 WebBrowser.maybeCompleteAuthSession();
 
-export default function LoginScreen(NavigationActivation: { new(): NavigationActivation; prototype: NavigationActivation; }) {
+export default function LoginScreen() {
   const navigation = useNavigation<NavigationProp>();
 
-  const [email, setEmail] = useState<string>("");
-  const [senha, setSenha] = useState<string>("");
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+  // Redirect URI configurado para Expo Go
+  const redirectUri = AuthSession.makeRedirectUri({
+    useProxy: false // Garante que vamos usar https://auth.expo.io/@elli.kun/OurHaven
+  } as any);
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     clientId: "705247021596-6dmprmmr3t1m94vdeeeckq3fdo1m9k7g.apps.googleusercontent.com",
     iosClientId: "705247021596-f2v3vunmdemt75sbifb1qitaskpbt8s9.apps.googleusercontent.com",
     androidClientId: "705247021596-itqbjgtrmuo5tuv560v10vejqe3q04tl.apps.googleusercontent.com",
     webClientId: "705247021596-fb5b3u0fv1pb3lis8bpkrn9tea32t5pn.apps.googleusercontent.com",
+    redirectUri,
   });
 
   const handleLoginEmail = async () => {
@@ -62,6 +70,7 @@ export default function LoginScreen(NavigationActivation: { new(): NavigationAct
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user: User | null) => {
+      setCurrentUser(user);
       if (user) {
         navigation.replace("Home");
       }
@@ -73,36 +82,46 @@ export default function LoginScreen(NavigationActivation: { new(): NavigationAct
     <View style={styles.container}>
       <Text style={styles.title}>Our Haven ❤️</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="E-mail"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Senha"
-        secureTextEntry
-        value={senha}
-        onChangeText={setSenha}
-      />
+      {currentUser ? (
+        <View style={{ alignItems: "center" }}>
+          <Text style={{ marginBottom: 10 }}>
+            Logado como: {currentUser.email}
+          </Text>
+        </View>
+      ) : (
+        <>
+          <TextInput
+            style={styles.input}
+            placeholder="E-mail"
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="none"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Senha"
+            secureTextEntry
+            value={senha}
+            onChangeText={setSenha}
+          />
 
-      <TouchableOpacity style={styles.button} onPress={handleLoginEmail}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={handleLoginEmail}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
 
-      <TouchableOpacity style={styles.buttonSecondary} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Criar Conta</Text>
-      </TouchableOpacity>
+          <TouchableOpacity style={styles.buttonSecondary} onPress={handleRegister}>
+            <Text style={styles.buttonText}>Criar Conta</Text>
+          </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.googleButton}
-        disabled={!request}
-        onPress={() => promptAsync()}
-      >
-        <Text style={styles.buttonText}>Entrar com Google</Text>
-      </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.googleButton}
+            disabled={!request}
+            onPress={() => promptAsync({ useProxy: false } as any)} // força usar proxy no Expo Go
+          >
+            <Text style={styles.buttonText}>Entrar com Google</Text>
+          </TouchableOpacity>
+        </>
+      )}
     </View>
   );
 }
