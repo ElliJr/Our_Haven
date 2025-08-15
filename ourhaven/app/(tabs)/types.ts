@@ -1,6 +1,7 @@
+// types.ts
 export type RootStackParamList = {
-  ChatScreen: undefined; // se a tela Chat não recebe parâmetros
-  LoginScreen: undefined;
-  index: undefined;
-  // adicione outras telas que você tiver, com parâmetros se necessário
+  Login: undefined;
+  Home: undefined;
 };
+
+// ❌ Não deve ser tratado como rota. Não coloque na pasta de rotas.

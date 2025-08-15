@@ -1,137 +1,109 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
-import { auth } from "../../components/firebaseConfig";
-import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  GoogleAuthProvider,
-  signInWithCredential,
-  User
-} from "firebase/auth";
-import * as WebBrowser from "expo-web-browser";
-import * as AuthSession from "expo-auth-session";
-import * as Google from "expo-auth-session/providers/google";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useNavigation } from "@react-navigation/native";
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { auth } from '../../components/firebaseConfig';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, User } from 'firebase/auth';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
 
 type RootStackParamList = {
   Login: undefined;
   Home: undefined;
 };
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Login">;
-
-WebBrowser.maybeCompleteAuthSession();
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
 export default function LoginScreen() {
   const navigation = useNavigation<NavigationProp>();
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
 
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const fazerLogin = async () => {
+    if (!email || !senha) {
+      Alert.alert('Erro', 'Preencha e-mail e senha');
+      return;
+    }
 
-  // Redirect URI configurado para Expo Go
-  const redirectUri = AuthSession.makeRedirectUri({
-    useProxy: false // Garante que vamos usar https://auth.expo.io/@elli.kun/OurHaven
-  } as any);
-
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    clientId: "705247021596-6dmprmmr3t1m94vdeeeckq3fdo1m9k7g.apps.googleusercontent.com",
-    iosClientId: "705247021596-f2v3vunmdemt75sbifb1qitaskpbt8s9.apps.googleusercontent.com",
-    androidClientId: "705247021596-itqbjgtrmuo5tuv560v10vejqe3q04tl.apps.googleusercontent.com",
-    webClientId: "705247021596-fb5b3u0fv1pb3lis8bpkrn9tea32t5pn.apps.googleusercontent.com",
-    redirectUri,
-  });
-
-  const handleLoginEmail = async () => {
     try {
-      await signInWithEmailAndPassword(auth, email, senha);
-    } catch (error: any) {
-      console.log("Erro no login:", error.message);
-    }
-  };
+      const userCredential = await signInWithEmailAndPassword(auth, email, senha);
+      const user: User = userCredential.user;
 
-  const handleRegister = async () => {
-    try {
-      await createUserWithEmailAndPassword(auth, email, senha);
-    } catch (error: any) {
-      console.log("Erro no registro:", error.message);
-    }
-  };
-
-  useEffect(() => {
-    if (response?.type === "success") {
-      const { id_token } = response.params as any;
-      const credential = GoogleAuthProvider.credential(id_token);
-      signInWithCredential(auth, credential);
-    }
-  }, [response]);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user: User | null) => {
-      setCurrentUser(user);
-      if (user) {
-        navigation.replace("Home");
+      // Salva localmente
+      const dadosSalvos = await AsyncStorage.getItem('usuarios');
+      const usuarios = dadosSalvos ? JSON.parse(dadosSalvos) : [];
+      const existe = usuarios.some((u: { email: string }) => u.email === email);
+      if (!existe) {
+        usuarios.push({ email, senha });
+        await AsyncStorage.setItem('usuarios', JSON.stringify(usuarios));
       }
-    });
-    return unsubscribe;
-  }, []);
+
+      Alert.alert('Sucesso', `Bem-vindo, ${user.email}`);
+      navigation.navigate('Home'); // ✅ agora funciona
+    } catch (error: any) {
+      console.log('Erro login Firebase:', error.message);
+      Alert.alert('Erro', 'Usuário ou senha inválidos');
+    }
+  };
+
+  const cadastrarUsuario = async () => {
+    if (!email || !senha) {
+      Alert.alert('Erro', 'Preencha e-mail e senha');
+      return;
+    }
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+      const user: User = userCredential.user;
+
+      // Salva localmente
+      const dadosSalvos = await AsyncStorage.getItem('usuarios');
+      const usuarios = dadosSalvos ? JSON.parse(dadosSalvos) : [];
+      usuarios.push({ email, senha });
+      await AsyncStorage.setItem('usuarios', JSON.stringify(usuarios));
+
+      Alert.alert('Sucesso', `Conta criada! Bem-vindo, ${user.email}`);
+      setEmail('');
+      setSenha('');
+    } catch (error: any) {
+      console.log('Erro cadastro Firebase:', error.message);
+      Alert.alert('Erro', error.message);
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Our Haven ❤️</Text>
-
-      {currentUser ? (
-        <View style={{ alignItems: "center" }}>
-          <Text style={{ marginBottom: 10 }}>
-            Logado como: {currentUser.email}
-          </Text>
-        </View>
-      ) : (
-        <>
-          <TextInput
-            style={styles.input}
-            placeholder="E-mail"
-            value={email}
-            onChangeText={setEmail}
-            autoCapitalize="none"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Senha"
-            secureTextEntry
-            value={senha}
-            onChangeText={setSenha}
-          />
-
-          <TouchableOpacity style={styles.button} onPress={handleLoginEmail}>
-            <Text style={styles.buttonText}>Login</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.buttonSecondary} onPress={handleRegister}>
-            <Text style={styles.buttonText}>Criar Conta</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.googleButton}
-            disabled={!request}
-            onPress={() => promptAsync({ useProxy: false } as any)} // força usar proxy no Expo Go
-          >
-            <Text style={styles.buttonText}>Entrar com Google</Text>
-          </TouchableOpacity>
-        </>
-      )}
+      <Text style={styles.title}>OurHaven ❤️</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="E-mail"
+        value={email}
+        onChangeText={setEmail}
+        autoCapitalize="none"
+        keyboardType="email-address"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Senha"
+        value={senha}
+        onChangeText={setSenha}
+        secureTextEntry
+      />
+      <TouchableOpacity style={styles.button} onPress={fazerLogin}>
+        <Text style={styles.buttonText}>Entrar</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={[styles.button, styles.cadastroButton]} onPress={cadastrarUsuario}>
+        <Text style={styles.buttonText}>Cadastrar</Text>
+      </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#FFE4EC", padding: 20 },
-  title: { fontSize: 28, fontWeight: "bold", color: "#C2185B", marginBottom: 20 },
-  input: { width: "100%", padding: 12, backgroundColor: "#fff", borderRadius: 8, marginBottom: 10, borderWidth: 1, borderColor: "#ccc" },
-  button: { backgroundColor: "#C2185B", padding: 12, borderRadius: 8, width: "100%", alignItems: "center", marginBottom: 10 },
-  buttonSecondary: { backgroundColor: "#AD1457", padding: 12, borderRadius: 8, width: "100%", alignItems: "center", marginBottom: 10 },
-  googleButton: { backgroundColor: "#DB4437", padding: 12, borderRadius: 8, width: "100%", alignItems: "center" },
-  buttonText: { color: "#fff", fontWeight: "bold" },
+  container: { flex: 1, backgroundColor: '#1B1F3B', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20 },
+  title: { fontSize: 32, fontWeight: 'bold', color: '#E91E63', marginBottom: 20 },
+  input: { width: '100%', padding: 12, backgroundColor: '#2C2F4A', borderRadius: 8, color: '#fff', marginBottom: 15 },
+  button: { width: '100%', backgroundColor: '#E91E63', paddingVertical: 12, borderRadius: 8, alignItems: 'center', marginBottom: 10 },
+  cadastroButton: { backgroundColor: '#FF4081' },
+  buttonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
 });
