@@ -1,16 +1,16 @@
 // App.tsx
 import React, { useEffect, useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, NavigationIndependentTree } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { auth } from '../../components/firebaseConfig';
+import { auth } from '../components/firebaseConfig';
+import metaPR from './(tabs)/metaPR';
+import index from './(tabs)/index';
 
-import LoginScreen from './LoginScreen';
-import ChatScreen from './ChatScreen';
 
-export type RootStackParamList = {
-  Login: undefined;
+type RootStackParamList = {
   Home: undefined;
+  metapr: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -30,14 +30,16 @@ export default function App() {
   if (loading) return null; // ou uma tela de loading
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {user ? (
-          <Stack.Screen name="Home" component={ChatScreen} />
-        ) : (
-          <Stack.Screen name="Login" component={LoginScreen} />
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <NavigationIndependentTree>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          {user ? (
+            <Stack.Screen name="Home" component={index} />
+          ) : (
+            <Stack.Screen name="metapr" component={metaPR} />
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </NavigationIndependentTree>
   );
 }
