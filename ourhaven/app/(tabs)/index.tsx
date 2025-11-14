@@ -1,188 +1,326 @@
-import React from 'react';
-import { StyleSheet, ScrollView, Text } from 'react-native';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { Link } from 'expo-router'
+import React from "react";
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  ScrollView, 
+  TouchableOpacity 
+} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 
-
-
-export default function WorkoutScreen() {
+export default function AzaironScreen(): JSX.Element {
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <ThemedText type="title" style={styles.title}>🏋️ Rotina de Treino – Hipertrofia (Avançado)</ThemedText>
+    <ScrollView style={styles.container}>
+      
+      {/* HERO */}
+      <LinearGradient
+        colors={["#140014", "#000000"]}
+        style={styles.hero}
+      >
+        <Text style={styles.heroTitle}>Azairon</Text>
 
-      {/* Aquecimento */}
-      <ThemedView style={styles.highlight}>
-        <ThemedText>
-          <ThemedText style={{ fontWeight: 'bold' }}>Aquecimento Inicial:</ThemedText> 3 a 5 minutos de agachamento, bicicleta ou elíptico, seguido de 2 séries leves do primeiro exercício do treino.
-        </ThemedText>
-      </ThemedView>
+        <Text style={styles.heroLead}>
+          Seu novo treinador inteligente.{"\n"}
+          Crie sua conta grátis e receba um treino completo em segundos.
+        </Text>
 
-      {/* Segunda */}
-      <ThemedText type="subtitle" style={styles.subtitle}>📅 Segunda – Peito e Tríceps</ThemedText>
-      <ThemedView style={styles.section}>
-        {[
-          { exercise: 'Supino reto', sets: '4x8-10', rest: '90s', load: 'Alta', notes: 'Manter escápulas retraídas' },
-          { exercise: 'Supino inclinado c/halteres', sets: '4x10', rest: '90s', load: 'Moderada a alta', notes: 'Controle na descida' },
-          { exercise: 'Crucifixo no cabo', sets: '4x10', rest: '90s', load: 'Moderada a alta', notes: 'Controle na descida' },
-          { exercise: 'Crossover', sets: '3x12', rest: '60s', load: 'Moderada', notes: 'Não juntar totalmente os braços' },
-          { exercise: 'Paralelas', sets: '3x até falha', rest: '90s', load: 'Peso corporal/carga adicional', notes: 'Corpo firme' },
-          { exercise: 'Tríceps francês/coice', sets: '3x10-12', rest: '60s', load: 'Moderada', notes: 'Não abrir os cotovelos' },
-          { exercise: 'Tríceps testa cabo', sets: '3x10-12', rest: '60s', load: 'Moderada', notes: 'Não abrir os cotovelos' },
-        ].map((item, idx) => (
-          <ThemedView key={idx} style={styles.row}>
-            <Text style={styles.cell}>{item.exercise}</Text>
-            <Text style={styles.cell}>{item.sets}</Text>
-            <Text style={styles.cell}>{item.rest}</Text>
-            <Text style={styles.cell}>{item.load}</Text>
-            <Text style={styles.cell}>{item.notes}</Text>
-          </ThemedView>
+        <View style={styles.heroButtons}>
+          <TouchableOpacity style={styles.btnPrimary}>
+            <Text style={styles.btnPrimaryText}>Criar Conta</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.btnOutline}>
+            <Text style={styles.btnOutlineText}>Saiba Mais</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Text style={styles.heroNote}>Menos de 2 minutos para começar.</Text>
+      </LinearGradient>
+
+      {/* COMO FUNCIONA */}
+      <Text style={styles.sectionTitle}>Como funciona?</Text>
+
+      <View style={styles.grid}>
+        {howData.map((item, i) => (
+          <View key={i} style={styles.card}>
+            <Text style={styles.cardNumber}>{item.number}</Text>
+            <Text style={styles.cardTitle}>{item.title}</Text>
+            <Text style={styles.cardText}>{item.text}</Text>
+          </View>
         ))}
-      </ThemedView>
+      </View>
 
-      {/* Terça */}
-      <ThemedText type="subtitle" style={styles.subtitle}>📅 Terça – Costas e Bíceps</ThemedText>
-      <ThemedView style={styles.section}>
-        {[
-          { exercise: 'Remada curvada', sets: '4x8-10', rest: '90s', load: 'Alta', notes: 'Coluna reta' },
-          { exercise: 'Puxada na frente', sets: '3x10-12', rest: '75s', load: 'Moderada', notes: 'Segurar 1s embaixo' },
-          { exercise: 'remada cabo', sets: '3x10-12', rest: '75s', load: 'Moderada', notes: '//' },
-          { exercise: 'Rosca direta barra W', sets: '4x10', rest: '75s', load: 'Moderada a alta', notes: 'Evitar balanço' },
-          { exercise: 'Biceps na máquina', sets: '3x8-10-12', rest: '75s', load: 'Moderada a alta', notes: 'Aumento progresivo' },
-          { exercise: 'Rosca alternada', sets: '3x12', rest: '60s', load: 'Moderada', notes: 'Rotacionar punho no topo' },
-          { exercise: 'Rosca Martelo', sets: '3x12', rest: '60s', load: 'Moderada', notes: 'Evitar balanço' },
-        ].map((item, idx) => (
-          <ThemedView key={idx} style={styles.row}>
-            <Text style={styles.cell}>{item.exercise}</Text>
-            <Text style={styles.cell}>{item.sets}</Text>
-            <Text style={styles.cell}>{item.rest}</Text>
-            <Text style={styles.cell}>{item.load}</Text>
-            <Text style={styles.cell}>{item.notes}</Text>
-          </ThemedView>
+      {/* FEATURES */}
+      <Text style={styles.sectionTitle}>Por que usar o Azairon?</Text>
+
+      <View style={styles.grid}>
+        {featuresData.map((item, i) => (
+          <View key={i} style={styles.featureCard}>
+            <Text style={styles.featureTitle}>{item.title}</Text>
+            <Text style={styles.featureText}>{item.text}</Text>
+          </View>
         ))}
-      </ThemedView>
+      </View>
 
-      {/* Quarta */}
-      <ThemedText type="subtitle" style={styles.subtitle}>📅 Quarta – Pernas e Abdômen</ThemedText>
-      <ThemedView style={styles.section}>
-        {[
-          { exercise: 'Cadeira extensora', sets: '3x12', rest: '60s', load: 'Moderada', notes: 'Contrair no topo' },
-          { exercise: 'Mesa flexora', sets: '3x12', rest: '60s', load: 'Moderada', notes: 'Controle na fase excêntrica' },
-          { exercise: 'Leg press', sets: '4x10', rest: '90s', load: 'Alta', notes: 'Não travar joelhos' },
-          { exercise: 'Agachamento livre', sets: '5x8', rest: '120s', load: 'Alta', notes: 'Descer até 90° ou mais' },
-          { exercise: 'Agachamento Smith', sets: '5x8', rest: '120s', load: 'Alta', notes: 'Descer até 90° ou mais' },
-          { exercise: 'Oblíquos', sets: '4x20', rest: '30s', load: 'Peso corporal', notes: 'Rotação consciente' },
-        ].map((item, idx) => (
-          <ThemedView key={idx} style={styles.row}>
-            <Text style={styles.cell}>{item.exercise}</Text>
-            <Text style={styles.cell}>{item.sets}</Text>
-            <Text style={styles.cell}>{item.rest}</Text>
-            <Text style={styles.cell}>{item.load}</Text>
-            <Text style={styles.cell}>{item.notes}</Text>
-          </ThemedView>
+      {/* TESTEMUNHOS */}
+      <Text style={styles.sectionTitle}>O que estão dizendo</Text>
+
+      <View style={styles.grid}>
+        {testimonialsData.map((item, i) => (
+          <View key={i} style={styles.testimonialCard}>
+            <Text style={styles.testimonialText}>{item.text}</Text>
+            <Text style={styles.testimonialAuthor}>— {item.author}</Text>
+          </View>
         ))}
-      </ThemedView>
+      </View>
 
-      {/* Quinta */}
-      <ThemedText type="subtitle" style={styles.subtitle}>📅 Quinta – Ombros e Trapézio</ThemedText>
-      <ThemedView style={styles.section}>
-        {[
-          { exercise: 'Desenvolvimento militar com barra', sets: '4x8-10', rest: '90s', load: 'Alta', notes: 'Não arquear a lombar' },
-          { exercise: 'Elevação lateral', sets: '4x12', rest: '60s', load: 'Moderada', notes: 'Subir até altura dos ombros' },
-          { exercise: 'Elevação frontal', sets: '3x12', rest: '60s', load: 'Moderada', notes: 'Controle na descida' },
-          { exercise: 'Remada alta barra W', sets: '3x10', rest: '75s', load: 'Moderada a alta', notes: 'Cuidado com punho' },
-          { exercise: 'Encolhimento de ombros', sets: '4x15', rest: '60s', load: 'Alta', notes: 'Contrair bem em cima' },
-          { exercise: 'Remada Alta', sets: '4x15', rest: '60s', load: 'Alta', notes: 'Contrair bem em cima' },
-        ].map((item, idx) => (
-          <ThemedView key={idx} style={styles.row}>
-            <Text style={styles.cell}>{item.exercise}</Text>
-            <Text style={styles.cell}>{item.sets}</Text>
-            <Text style={styles.cell}>{item.rest}</Text>
-            <Text style={styles.cell}>{item.load}</Text>
-            <Text style={styles.cell}>{item.notes}</Text>
-          </ThemedView>
-        ))}
-      </ThemedView>
+      {/* CTA FINAL */}
+      <View style={styles.ctaFinal}>
+        <Text style={styles.ctaTitle}>Pronto para transformar seu treino?</Text>
+        <Text style={styles.ctaText}>Crie sua conta e comece agora.</Text>
 
-      {/* Sexta */}
-      <ThemedText type="subtitle" style={styles.subtitle}>📅 Sexta – Funcional / HIIT</ThemedText>
-      <ThemedView style={styles.section}>
-        {[
-          { exercise: 'Rosca Alternada', sets: '3x12', rest: '60s', load: 'Moderada', notes: 'Rotacionar punho no topo' },
-          { exercise: 'Antebraço', sets: '3x12', rest: '60s', load: 'alta', notes: 'Rotacionar punho no topo' },
-          { exercise: 'Supino reto', sets: '4x8-10', rest: '90s', load: 'Alta', notes: 'Manter escápulas retraídas' },
-          { exercise: 'Supino inclinado c/halteres', sets: '4x10', rest: '90s', load: 'Moderada a alta', notes: 'Controle na descida' },
-          { exercise: 'Puxada na frente', sets: '3x10-12', rest: '75s', load: 'Moderada', notes: 'Segurar 1s embaixo' },
-        ].map((item, idx) => (
-          <ThemedView key={idx} style={styles.row}>
-            <Text style={styles.cell}>{item.exercise}</Text>
-            <Text style={styles.cell}>{item.sets}</Text>
-            <Text style={styles.cell}>{item.rest}</Text>
-            <Text style={styles.cell}>{item.load}</Text>
-            <Text style={styles.cell}>{item.notes}</Text>
-          </ThemedView>
-        ))}
-      </ThemedView>
+        <TouchableOpacity style={styles.btnPrimaryBig}>
+          <Text style={styles.btnPrimaryText}>Começar Agora</Text>
+        </TouchableOpacity>
+      </View>
 
-
-      <Text>
-        
-        
-
+      {/* FOOTER */}
+      <Text style={styles.footer}>
+        © 2025 Azairon — Todos os direitos reservados.
       </Text>
 
-
-      {/* Alongamento */}
-      <ThemedView style={styles.highlight}>
-        <ThemedText>
-          <ThemedText style={{ fontWeight: 'bold' }}>Alongamento Final:</ThemedText> 5 a 10 minutos de alongamento estático para os principais grupos musculares trabalhados.
-        </ThemedText>
-      </ThemedView>
     </ScrollView>
   );
 }
 
+/* -----------------------------
+   TIPAGEM DOS DADOS
+----------------------------- */
+
+interface StepItem {
+  number: string;
+  title: string;
+  text: string;
+}
+
+interface FeatureItem {
+  title: string;
+  text: string;
+}
+
+interface TestimonialItem {
+  text: string;
+  author: string;
+}
+
+/* -----------------------------
+   ARRAYS DE CONTEÚDO
+----------------------------- */
+
+const howData: StepItem[] = [
+  {
+    number: "1",
+    title: "Crie sua conta",
+    text: "Leva menos de 1 minuto. Você só precisa informar seus objetivos."
+  },
+  {
+    number: "2",
+    title: "IA analisa seu perfil",
+    text: "Nível, experiência, rotina, equipamentos… tudo é considerado automaticamente."
+  },
+  {
+    number: "3",
+    title: "Receba seu treino",
+    text: "Um treino completo otimizado, atualizado semanalmente."
+  }
+];
+
+const featuresData: FeatureItem[] = [
+  { title: "Treinos personalizados", text: "IA que entende seu corpo, objetivo e rotina." },
+  { title: "Evolução contínua", text: "Ajustes automáticos com segurança." },
+  { title: "Comunidade ativa", text: "Compartilhe conquistas e evolua junto." },
+  { title: "Acompanhamento inteligente", text: "Recomendações em tempo real." },
+  { title: "Biblioteca de exercícios", text: "Vídeos e execução correta de cada movimento." }
+];
+
+const testimonialsData: TestimonialItem[] = [
+  { text: "“Em 3 semanas tive mais evolução do que em meses treinando sozinho.”", author: "Lucas Andrade" },
+  { text: "“A IA ajusta tudo de acordo com meu tempo. Muito eficiente!”", author: "Marina Santos" },
+  { text: "“Parece treino feito por um personal. Excelente!”", author: "Rafael Monteiro" }
+];
+
+/* -----------------------------
+   STYLESHEET
+----------------------------- */
+
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: "#050505",
+  },
+
+  /* HERO */
+  hero: {
+    paddingVertical: 80,
+    alignItems: "center",
+    paddingHorizontal: 20,
+  },
+  heroTitle: {
+    fontSize: 42,
+    fontWeight: "900",
+    color: "#ff0044",
+    textShadowRadius: 15,
+  },
+  heroLead: {
+    fontSize: 16,
+    textAlign: "center",
+    marginTop: 14,
+    color: "#d8d8d8",
+    maxWidth: 320,
+  },
+  heroButtons: {
+    flexDirection: "row",
+    gap: 12,
+    marginTop: 30,
+  },
+  heroNote: {
+    marginTop: 30,
+    color: "#aaa",
+    fontSize: 12,
+  },
+
+  /* BUTTONS */
+  btnPrimary: {
+    backgroundColor: "#ff0044",
+    paddingVertical: 12,
+    paddingHorizontal: 26,
+    borderRadius: 10,
+  },
+  btnPrimaryBig: {
+    backgroundColor: "#ff0044",
+    paddingVertical: 16,
+    paddingHorizontal: 50,
+    borderRadius: 12,
+    marginTop: 20,
+  },
+  btnPrimaryText: {
+    color: "#fff",
+    fontWeight: "700",
+    fontSize: 16,
+  },
+  btnOutline: {
+    borderWidth: 2,
+    borderColor: "#ff0044",
+    paddingVertical: 12,
+    paddingHorizontal: 26,
+    borderRadius: 10,
+  },
+  btnOutlineText: {
+    color: "#ff0044",
+    fontWeight: "700",
+    fontSize: 16,
+  },
+
+  /* TITLES */
+  sectionTitle: {
+    color: "#ff0044",
+    fontSize: 26,
+    fontWeight: "900",
+    textAlign: "center",
+    marginTop: 50,
+    marginBottom: 20,
+  },
+
+  /* GRID */
+  grid: {
+    paddingHorizontal: 20,
+    gap: 20,
+  },
+
+  /* CARDS */
+  card: {
+    backgroundColor: "#0e0e0e",
     padding: 20,
-    backgroundColor: '#000000ff',
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "#1a1a1a",
   },
-  title: {
-    fontSize: 28,
-    top: 50,
-    textAlign: 'center',
-    marginBottom: 40,
-    color: 'white',
-  },
-  subtitle: {
-    fontSize: 20,
-    marginTop: 25,
-    color: '#ffffffff',
-  },
-  section: {
-    backgroundColor: '#960505e7',
-    padding: 15,
+  cardNumber: {
+    backgroundColor: "#ff0044",
+    color: "#fff",
+    paddingHorizontal: 12,
+    paddingVertical: 4,
     borderRadius: 8,
-    marginVertical: 10,
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    fontWeight: "900",
+    alignSelf: "flex-start",
     marginBottom: 8,
   },
-  cell: {
-    flex: 1,
-    fontSize: 14,
-    marginHorizontal: 2,
-    backgroundColor: '#f3f0e5ff',
-    padding: 4,
-    borderRadius: 3,
+  cardTitle: {
+    fontSize: 18,
+    color: "#fff",
+    fontWeight: "700",
   },
-  highlight: {
-    backgroundColor: '#2c2c1941',
-    borderLeftWidth: 4,
-    borderLeftColor: '#af0101ff',
-    padding: 10,
-    marginVertical: 15,
+  cardText: {
+    marginTop: 5,
+    color: "#ccc",
+  },
+
+  /* FEATURES */
+  featureCard: {
+    backgroundColor: "#0e0e0e",
+    padding: 20,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "#222",
+  },
+  featureTitle: {
+    color: "#00ffb0",
+    fontSize: 18,
+    marginBottom: 6,
+  },
+  featureText: {
+    color: "#ccc",
+  },
+
+  /* TESTEMUNHOS */
+  testimonialCard: {
+    backgroundColor: "#111",
+    padding: 20,
+    borderRadius: 14,
+    borderColor: "#222",
+    borderWidth: 1,
+  },
+  testimonialText: {
+    color: "#e4e4e4",
+    fontSize: 16,
+    marginBottom: 6,
+  },
+  testimonialAuthor: {
+    color: "#aaa",
+    fontSize: 12,
+  },
+
+  /* CTA FINAL */
+  ctaFinal: {
+    alignItems: "center",
+    padding: 40,
+    marginTop: 40,
+  },
+  ctaTitle: {
+    fontSize: 26,
+    color: "#ff0044",
+    fontWeight: "900",
+  },
+  ctaText: {
+    marginTop: 10,
+    color: "#ccc",
+    fontSize: 16,
+  },
+
+  /* FOOTER */
+  footer: {
+    textAlign: "center",
+    padding: 40,
+    color: "#777",
+    fontSize: 12,
   },
 });
